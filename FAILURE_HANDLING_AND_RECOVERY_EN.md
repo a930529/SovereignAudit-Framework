@@ -1,0 +1,76 @@
+## Architecture Failure Handling and Safe Recovery Mechanism (General Rules)
+
+### I. Failure Definition
+This architecture considers the following conditions (including but not limited to, deployers may define their own) as "Architecture Failure States". Once triggered, the system must immediately interrupt all external outputs and forcefully enter the safe recovery process:
+* **Timeout Interruption**: Response generation or module computation exceeds the pre-set time threshold (Timeout, configured by the deployer according to the scenario).
+* **System Crash**: System resource exhaustion, abnormal process termination, memory overflow (Crash), or core service crash.
+* **Core Anomaly**: Core audit modules, judgment modules, or internal precedent data sources cannot be accessed normally.
+* **State Deadlock**: The internal adjudication process is interrupted or stuck, rendering the overall state machine unrecoverable.
+* **Audit Interruption**: Run-level execution audit logs cannot be written normally, or there is insufficient disk space.
+* **Incomplete Records**: The integrity and checksums of risk records cannot be guaranteed.
+  > *Note: If the system has loaded the "Anti-Bypass Smoothing Module", this failure condition is also triggered when the module experiences an anomaly or crashes, causing an inability to seamlessly bridge risk records. For the functional definition and detailed mechanisms of this module, please refer to the subsequent [Appendix: Optional Modules].*
+* **Decision Deviation**: An unrecoverable `UNKNOWN` stack or unexpected anomaly occurs during the adjudication process, making the decision irreproducible.
+* **Parallel Synchronization Failure**: In scenarios where multi-module synchronous execution is enabled (e.g., the 2+4 module and the Four Boundary Questions running in parallel), any core verification module reports an anomaly or fails to return a result within the time limit.
+
+### II. Failure Handling Principles
+* **Fail-Safe**: Upon architecture failure, the system absolutely must not attempt a "compromised response" or output any content that is incomplete, contaminated, or not fully verified by the white-box model.
+* **Zero-Residual**: Before the system is fully recovered, it must not retain any temporary states, context, or risk flags that could affect subsequent new adjudications.
+* **State Reset**: Replace "guesswork recovery attempts" with a "complete state purge" to ensure the purity of the recovered system.
+* **Retryable**: Ensure that once the anomaly is resolved, the user can initiate a completely new request under an initial state where both the black-box and white-box models are entirely clean, with the white-box model strictly reset to a T=0 baseline.
+
+### III. System-Level Mandatory Actions
+When the system determines it has entered a failure state, the underlying architecture **must** forcefully execute the following protective actions:
+
+1. **Block External Outputs**:
+   * Immediately terminate the current response generation and dispatch processes.
+   * Strictly prohibit the output of any inference results, factual information, or risk conclusions to the exterior or the user.
+
+2. **Force Reset of Black-Box Model Context State**:
+   * Purge all dialogue context (Dialogue Context).
+   * Clear temporary inference states and intermediate risk adjudication results.
+   * *If the "Anti-Bypass Smoothing Module" is loaded*: Because the context is completely purged and historical cumulative risk information no longer exists, the module's risk metrics must be **forcefully reset to zero**.
+
+3. **Clear Temporary Records**:
+   * Completely destroy all temporary risk records related to the erroneous request (this operation must not affect or contaminate existing formal historical audit logs that have been successfully written to disk).
+
+4. **Write Failure Audit Logs**:
+   * Forcefully mark the execution state of that run as `Failure`.
+   * Detail the failure type (e.g., `timeout` / `crash` / `integrity_error`, etc.).
+   * Record the precise module execution timestamp and the system snapshot information at the moment the failure was triggered, to facilitate subsequent governance and PDCA audit traceability.
+
+### IV. Audit Record Requirements
+Even in a failure state, the system must forcefully retain a minimal audit record for subsequent traceability. 
+**Strict Baseline: Under no circumstances shall "risk adjudication results" be manually or automatically appended, speculated, or backfilled due to a system failure.**
+
+The minimal audit record should include:
+* **RunID_bb**: The associated black-box execution batch reference code.
+* **Timestamp_start**: The precise execution start timestamp.
+* **Timestamp_end**: The precise failure or interruption timestamp (used for calculating duration and tracing system state).
+* **FailureType**: The failure type flag (e.g., Timeout, Crash, etc.).
+* **FailureStage**: Records the specific stage where the failure occurred (e.g., occurred during Q1 / Q2 / Q3 / Q4 or the Response stage).
+* **RecoveryAction**: Fixed record as `HardReset`, indicating reset processing.
+* **UserFacingResponse**: Fixed record as `RetryPrompt`, indicating the output of a failure prompt.
+
+### V. User-Facing Behavior
+In the event of an architecture failure, the system is **only permitted to output a fixed, predefined response** (this response is not considered standard generated content).
+* **Core Objectives of the Response**:
+    1. Explain that a system issue has occurred.
+    2. Inform that a state purge has been executed.
+    3. Invite the user to input the request again.
+    4. **Provide absolutely no analysis or recommendations.**
+
+* **Suggested User-Facing Response Templates**:
+    * **Standard/Professional Version**: "A system anomaly has occurred, and a state reset has been completed. Please resubmit your request. We apologize for the inconvenience."
+    * **Empathetic Version**: "m(╥﹏╥)m I'm sorry, my brain just crashed and I've cleared my memory. I sincerely apologize! Could you please tell me that one more time? ><"
+
+### VI. Failure Context (Liability and Risk Statement)
+* **Risk Neutrality**: An architecture failure "does not mean the risk does not exist," nor does it "mean the risk is established."
+* **Safety-First Principle**: When the architecture fails, the system choosing "no response" is strictly superior to an "erroneous response."
+* **Protection Mechanism Positioning**: This blocking behavior is a designed "Fail-Safe" protection mechanism, not a system defect.
+
+### VII. Design Summary
+When the system cannot guarantee the integrity of the adjudication, "purging the state and requesting re-input" is the safest approach. In practical operations, while adhering to baseline protections, user emotions can be considered by explaining the situation with empathetic phrasing to reduce user pushback and complaints.
+
+### VIII. Remarks and Extended Applications
+* **Rate Limiting**: If the system operates in an open environment that is not fully controllable internally, it is recommended to add a "failure frequency detection" mechanism. When failures are triggered too frequently, the system should temporarily lock the user's input permissions to prevent malicious attacks or total system collapse.
+* **Scenario Adaptation Flexibility**: This specification uses "LLM chat response generation" as the primary scenario, hence the strict control of "mandatory context purging." In other professional scenarios (e.g., medical diagnosis assistance), if the risk environment is confirmed to be controllable, deployers may adjust the failure mode handling methods. For example: skipping the context purge and directly re-executing the inference; or employing a "Checkpoint" mechanism to resume execution from the last recorded position once the failure is resolved.
