@@ -312,6 +312,7 @@ else:
 uninsurable = any(UIR[e_j] == 1 for e_j in events)
 
 一旦觸發 $\exists e_j : UIR(e_j) = 1$，直接觸發硬違反（見§4）。
+```
 
 ### 3. 邊界四問的可計算子指標
 
@@ -342,6 +343,7 @@ def compute_PCI(C, Comp):
 
 if PCI > 1:
     privilege_misuse = True # 你把成本轉嫁給別人 -> 特權濫用
+```
 
 **Q3: 權限對等指標** ($ASI \in [0,1]$)
 
