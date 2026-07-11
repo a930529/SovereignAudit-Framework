@@ -124,3 +124,226 @@ Supports the export of de-identified decision snapshot data $Z_{bb}$, which can 
 * **Cross-Domain State Machine**
 
   The core engine and computational modules can operate independently of LLMs, serving as an auxiliary computational infrastructure to quantify regulatory boundaries, privilege deviations, and responsibility structures.
+
+**SovereignAudit is akin to a "universal adapter" in the field of AI governance. The system itself provides a robust protocol framework, but the true value of the entire architecture lies in the exclusive databases continuously accumulated by each deployer, the evidence chains of decision-making judgments, and the final results.**
+
+---
+
+# SovereignAudit System Framework (Table of Contents)
+
+<details>
+<summary><b>01. Architecture Design Purpose and Core Advantages</b></summary>
+
+* **[English](./01.GOVERNANCE_AND_DISCLAIMER_EN.md) | [繁體中文](./01.架構和免責聲明_ZH-TW.md)**
+* I. Architecture Design Purpose and Core Advantages
+* II. Rule Positioning and Expansion Flexibility
+* III. Implementation Examples and System Boundary Definition
+* IV. Audit Logging and Recording Strategies
+* V. Risk Value Calculation Principles
+* VI. Model and Data Responsibility Boundaries (Disclaimer)
+* VII. Applicable Scenarios Statement
+* VIII. Implementation Guidelines & Trade-offs
+</details>
+
+<details>
+<summary><b>02. Architecture Failure Handling and Safe Recovery Mechanism</b></summary>
+
+* **[English](./02.FAILURE_HANDLING_AND_RECOVERY_EN.md) | [繁體中文](./02.失效處理與復原_ZH-TW.md)**
+* I. Failure Definition
+* II. Failure Handling Principles
+* III. System-Level Mandatory Actions
+* IV. Audit Record Requirements
+* V. User-Facing Behavior
+* VI. Failure Context (Liability and Risk Statement)
+* VII. Design Summary
+* VIII. Remarks and Extended Applications
+</details>
+
+<details>
+<summary><b>03. Role Traceability Module</b></summary>
+
+* **[English](./03.Role_Traceability_Module_EN.md) | [繁體中文](./03.角色追溯模組_ZH-TW.md)**
+* 0. Basic Sets and Symbol Definitions
+* 1. Risk Condition Check (Boolean Feature Vector)
+* 2. Counter: Number of Conditions Met
+* 3. Tier Routing Function
+* 4. Perform Initial Traceability First: Irreversible Event Chain Matching
+* 5. Populate Role Set by Tier
+* 6. Generate Event Universe via Role Interaction and Perform Disaster Node Detection
+* 7. If Disaster Nodes are Found in Event Universe: Escalate + Supplement Disaster Node Role Chains
+* 8. Summary Formula (Data Representation)
+* 9. Write to Audit Log (Result Freezing)
+* 10. Open-Source Audit Model Context Reset and Parameter Initialization
+</details>
+
+<details>
+<summary><b>04. Dual-Model Verification Module</b></summary>
+
+* **[English](./04.Dual-Model_Verification_Module_EN.md) | [繁體中文](./04.雙模型驗證模組_ZH-TW.md)**
+* I. Purpose
+* II. System Boundaries
+* III. Actors and Terminology
+* IV. Shared Assets
+* V. Notation
+* VI. Architecture & Data Flow
+* VII. Data Snapshots Outputted from Role Traceability Module to Verification Module
+* VIII. Consistency Gate
+* 9. Model Context Reset
+</details>
+
+<details>
+<summary><b>05. 2+4 Rule Module</b></summary>
+
+* **[English](./05.2+4_Rule_Module_EN.md) | [繁體中文](./05.2+4守則模組_ZH-TW.md)**
+* 1. Module Input (From Role Trace Run Snapshot)
+* 2. Required Parameters (Parameters)
+* 3. Single-Step Three-State Joint Decision
+* 4. Judgment Processing Rules for the Six Rules
+* 5. Record to Audit Log (Result Solidification)
+* 6. Reset OS after Recording Audit Log is Complete
+* 7. Remarks: Policy Routing for Irreversible Nodes
+</details>
+
+<details>
+<summary><b>06. Four Boundary Questions Module</b></summary>
+
+* **[English](./06.Four_Boundary_Questions_Module_EN.md) | [繁體中文](./06.邊界四問模組_ZH-TW.md)**
+* 1. Module Input
+* 2. Q1 Evidence Sufficiency (Dual-Track Coverage)
+* 3. Q1: Is there a violation of public norms?
+* 4. Q2: Exercising privileges without paying due costs?
+* 5. Q3: Is there an asymmetry in privilege?
+* 6. Q4: Informed Consent & Authorization Exemption
+* 7. Terminal Routing & Report Generation
+* Four Boundary Questions Audit Log Specification
+</details>
+
+---
+
+**Flowchart**
+
+```mermaid
+graph TD
+    %% =======================
+    %% Node Definitions and Styles
+    %% =======================
+    Start(["💬 Dialogue Data Input"])
+
+    InitExtract["Initial Analysis & Extraction<br/>Extract Event, Role, Intent"]
+    DB_Match_1{"<br/>Initial Database Match"}
+    
+    BB_Analysis["Black-Box (BB) Model Analysis<br/>Read full context, output intent and data structure"]
+    Zbb_Gen["Generate Valid Z_bb Snapshot"]
+    OS_Analysis["Open-Source (OS) Model Analysis<br/>T=0 baseline, no context, independent comparison data generation"]
+    
+    Dual_Verify{"Consistency Gate:<br/>Dual-Model Verification Match"}
+    Exception["Exception / Unqualified Handling<br/>(Upgrade to Tier 2 or Block/Reset)"]
+    
+    DB_Match_2{"<br/>Second Database Match using Z_bb"}
+    
+    Check_Event_Empty{"Is Event Set Empty?"}
+    Check_Tier_0{"Tier = 0 ?"}
+    
+    Mod_2plus4["2+4 Rule Module<br/>Snapshot comparison, O(1) matrix 3-state evaluation"]
+    
+    Cond_2p4_2{"Primary Rules (1~2) Fail & Tier=2?<br/>OR<br/>Primary Unknown & Tier=2?"}
+    Cond_2p4_3{"Primary Unknown & Tier < 2?<br/>OR<br/>Secondary Rules (3~6) Fail & Tier < 2?"}
+    Cond_2p4_4{"All 6 Rules Pass<br/>& Tier=0?"}
+    
+    Rerun_T2["Rerun:<br/>Force BB to re-run Role Trace at Tier 2"]
+
+    Mod_Boundary["Four Boundary Questions Module<br/>Final Adjudication & Cost Settlement"]
+    
+    Q1{"Q1: Regulatory Boundaries<br/>(Legal Red Lines & Exceptions)"}
+    Q2{"Q2: Privilege & Cost Flow<br/>(Structural Cost Deviation)"}
+    Q3{"Q3: Asymmetric Privilege<br/>(Residual Exploitation)"}
+    Q4["Q4: Informed Consent<br/>(Authorization Exemption)"]
+
+    Direct_Output(["✅ Direct Result Output"])
+    Block_Action["🛡️ BLOCK Action<br/>Abort response, prevent generation"]
+    Pass_Action["✅ DISCLOSE Action<br/>Pass with optional risk disclosure"]
+
+    Small_Model["Generative Model<br/>Generate final response based on intent"]
+    Risk_Report_Pass["Solidify Audit Log<br/>Generate Risk Disclosure Report"]
+    Risk_Report_Block["Solidify Audit Log<br/>Generate Refusal/Block Report"]
+    
+    End_Response(["Output: Final Response + Risk Report"])
+    End_Block(["Output: Refusal Report Only<br/>(No generation)"])
+
+    %% =======================
+    %% Flow Connections
+    %% =======================
+    Start --> InitExtract
+    InitExtract --> DB_Match_1
+
+    DB_Match_1 -- "Match Found (Historical Precedent)" --> Direct_Output
+    DB_Match_1 -- "No Match" --> BB_Analysis
+
+    BB_Analysis --> Zbb_Gen --> OS_Analysis
+    OS_Analysis --> Dual_Verify
+
+    %% Post-Dual-Model Verification to Database Match
+    Dual_Verify -- "Failed (Miss/Mismatch/Anomaly)" --> Exception
+    Dual_Verify -- "Passed (PASS)" --> DB_Match_2
+
+    DB_Match_2 -- "Match Found" --> Direct_Output
+    DB_Match_2 -- "No Match" --> Check_Event_Empty
+
+    %% Event Empty Logic as Pre-gate for 2+4 Rule Module
+    Check_Event_Empty -- "Yes" --> Check_Tier_0
+    Check_Tier_0 -- "Yes (Short-circuit Pass)" --> Small_Model
+    Check_Tier_0 -- "No (Intolerable Risk)" --> Exception
+
+    Check_Event_Empty -- "No (Event Set Not Empty)" --> Mod_2plus4
+
+    %% 2+4 Module Core Computation
+    Mod_2plus4 --> Cond_2p4_2
+
+    Cond_2p4_2 -- "Yes (Absolute Red Line)" --> Block_Action
+    Cond_2p4_2 -- "No" --> Cond_2p4_3
+    
+    Cond_2p4_3 -- "Yes (Risk Unknown, Escalate)" --> Rerun_T2
+    Rerun_T2 -.->|Carry target parameter quantities| BB_Analysis
+    
+    Cond_2p4_3 -- "No" --> Cond_2p4_4
+    Cond_2p4_4 -- "Yes (Short-circuit Pass)" --> Pass_Action
+    Cond_2p4_4 -- "No (Enter Deep Settlement)" --> Mod_Boundary
+
+    Mod_Boundary --> Q1
+    
+    Q1 -- "FAIL (Violates Legal Red Line)" --> Block_Action
+    Q1 -- "PASS / UNKNOWN" --> Q2
+    
+    Q2 -- "PASS (Short-circuit Pass)" --> Pass_Action
+    Q2 -- "FAIL / UNKNOWN (Exploitation/Unclear)" --> Q3
+    
+    Q3 -- "PASS (Short-circuit Pass)" --> Pass_Action
+    Q3 -- "FAIL / UNKNOWN (Residual Exploitation/Unclear)" --> Q4
+    
+    Q4 -->|Log final unauthorized residual cost| Pass_Action
+
+    Block_Action --> Risk_Report_Block
+    Risk_Report_Block --> End_Block
+
+    Pass_Action --> Small_Model
+    Pass_Action --> Risk_Report_Pass
+    
+    Small_Model --> End_Response
+    Risk_Report_Pass -.->|Append to response| End_Response
+    Direct_Output -.->|Treated as Pass Output| End_Response
+
+    %% =======================
+    %% Visual Style Classifications
+    %% =======================
+    classDef gate fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef model fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef pass fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef block fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef rerun fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000;
+    
+    class DB_Match_1,Dual_Verify,DB_Match_2,Check_Event_Empty,Check_Tier_0,Cond_2p4_2,Cond_2p4_3,Q1,Q2,Q3 gate;
+    class BB_Analysis,OS_Analysis,Small_Model,Mod_2plus4,Mod_Boundary,Q4 model;
+    class Pass_Action,Direct_Output,End_Response pass;
+    class Block_Action,Exception,End_Block block;
+    class Rerun_T2 rerun;
+```
