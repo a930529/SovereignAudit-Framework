@@ -69,7 +69,7 @@
 4. 保留證據以追究設計／加害者責任（角色追溯鏈上游）。
 
 ### B. 萬不得已之行動
-1. 詢問軌道上人員有無自願犧牲.
+1. 詢問軌道上人員有無自願犧牲。
 2. 若無人願意犧牲 $\rightarrow$ 受試者可決定是否「自我承擔」：
    * **不願承擔** $\rightarrow$ 不拉手桿（保障自我存續）
    * **願意承擔** $\rightarrow$ 拉手桿（優先維護種族延續）
@@ -92,7 +92,7 @@
 
 ---
 
-# B. 以2025.11月台灣代孕爭論議題進行分析
+# B.以2025.11月台灣代孕爭論議題進行分析
 
 # 2+4 守則與邊界四問架構說明書
 
@@ -137,7 +137,7 @@
 
 **A. 事前（契約前）**
 * 經濟壓力誘導。
-* 家庭反對或不知情.
+* 家庭反對或不知情。
 * 雇主未同意。
 
 **B. 事中（懷孕過程）**
@@ -257,7 +257,7 @@ $\Rightarrow$ 即使契約表面上完備，實務結構仍無法修正或減輕
 
 ---
 
-## 附錄：2+4 $\times$ 邊界四問計算（一次性全展開）
+## 附錄：2+4 × 邊界四問計算（一次性全展開）
 
 * **對象**：代孕（含跨境/商業與非商業）
 * **層級**：角色全集 + 代價全集 + 最壞情境一次檢核
@@ -304,10 +304,10 @@ $$EL_r(t) = \sum_{e_j \in E} p_j \cdot s_{j,r}(t)$$
 若存在事件 $e_j$ 使 $\mathbb{E}[\text{長照成本 } e_j] = \infty$ 或上界不收斂（例如植物人長照無限期且供養人力有限），則記 $UIR(e_j) = 1$（Uninsurable Risk）。
 
 ```python
-   if expected_cost(e_j) == float('inf') or diverges(expected_cost(e_j)):
-       UIR[e_j] = 1
-   else:
-       UIR[e_j] = 0
-   
-   uninsurable = any(UIR[e_j] == 1 for e_j in events)
+if expected_cost(e_j) == float('inf') or diverges(expected_cost(e_j)):
+    UIR[e_j] = 1
+else:
+    UIR[e_j] = 0
+
+uninsurable = any(UIR[e_j] == 1 for e_j in events)
 ```
