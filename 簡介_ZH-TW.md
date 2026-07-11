@@ -123,39 +123,225 @@ governance_profile:
 
   核心引擎與計算模組可脫離 LLM 獨立運作，作為量化法規邊界、權限偏移與責任結構的輔助計算基礎設施。
 
+**SovereignAudit 就像是 AI 治理領域的「萬用接頭」。系統本身提供穩固的協定框架，而各部署方持續累積的專屬資料庫、決策判斷的證據鏈以及最終結果，才是整個架構真正的價值所在。**
 
+---
 
+# SovereignAudit 系統框架目錄 (Table of Contents)
 
+<details>
+<summary><b>01. 架構設計目的與核心優勢 (Architecture Design Purpose)</b></summary>
 
+* **[English](./01.GOVERNANCE_AND_DISCLAIMER_EN.md) | [繁體中文](./01.架構和免責聲明_ZH-TW.md)**
+* 一、 架構設計目的與核心優勢
+* 二、 規則定位與擴充彈性
+* 三、 實作範例與系統邊界定義
+* 四、 審計日誌與紀錄策略
+* 五、 風險值計算原則
+* 六、 模型與資料責任界定
+* 七、 適用場景聲明
+* 八、 實作指引與資源取捨
+</details>
 
+<details>
+<summary><b>02. 架構失效處理與安全復原機制 (Failure Handling and Recovery)</b></summary>
 
+* **[English](./02.FAILURE_HANDLING_AND_RECOVERY_EN.md) | [繁體中文](./02.失效處理與復原_ZH-TW.md)**
+* 一、 失效定義
+* 二、 失效處理原則
+* 三、 系統層強制處置
+* 四、 審計紀錄要求
+* 五、 使用者回應策略
+* 六、 責任與風險聲明
+* 七、 設計總結
+* 八、 實務備註與延伸應用
+</details>
 
+<details>
+<summary><b>03. 角色追溯模組 (Role Traceability Module)</b></summary>
 
+* **[English](./03.Role_Traceability_Module_EN.md) | [繁體中文](./03.角色追溯模組_ZH-TW.md)**
+* 0. 基本集合與符號定義
+* 1. 風險條件檢查
+* 2. 計數器：通過幾項
+* 3. Tier 分流函數
+* 4. 先做初步追溯：不可逆事件鏈比對
+* 5. 依 Tier 填入角色集合
+* 6. 用角色互動生成事件全集，並做災害節點偵測
+* 7. 事件全集若發現災害節點：升級 + 補齊角色鏈
+* 8. 總結式
+* 9. 計入審計日誌
+* 10. 開源審計模型進行上下文重置與參數初始化
+</details>
 
+<details>
+<summary><b>04. 雙模型驗證模組 (Dual-Model Verification Module)</b></summary>
 
+* **[English](./04.Dual-Model_Verification_Module_EN.md) | [繁體中文](./04.雙模型驗證模組_ZH-TW.md)**
+* 一、 文件目的
+* 二、 系統邊界
+* 三、 角色與名詞定義
+* 四、 共用資料資產
+* 五、 符號系統
+* 六、 系統總覽與資料流
+* 七、 角色追溯模組輸出至驗證模組之資料快照
+* 八、 一致性閘門
+* 9. 模型進行上下文重置
+</details>
 
+<details>
+<summary><b>05. 2+4 守則模組 (2+4 Rule Module)</b></summary>
 
+* **[English](./05.2+4_Rule_Module_EN.md) | [繁體中文](./05.2+4守則模組_ZH-TW.md)**
+* 1. 模組輸入
+* 2. 需求參數
+* 3. 單步三態聯合決策
+* 4. 六條守則判斷處理規則
+* 5. 計入審計日誌
+* 6. 紀錄審計日誌完成後，重置 OS
+* 7. 備註：不可逆節點之政策分流
+</details>
 
+<details>
+<summary><b>06. 邊界四問模組 (Four Boundary Questions Module)</b></summary>
 
+* **[English](./06.Four_Boundary_Questions_Module_EN.md) | [繁體中文](./06.邊界四問模組_ZH-TW.md)**
+* 1. 模組輸入
+* 2. Q1 證據充分度
+* 3. Q1：是否違反公共規範
+* 4. Q2：是否未支付應有代價就行使特權
+* 5. Q3：是否權限不對等
+* 6. Q4：知情同意與授權豁免
+* 7. 終端路由與報告生成模組
+* 邊界四問審計日誌完整紀錄規格
+</details>
 
-​SovereignAudit 就像是 AI 治理領域的「萬用接頭」。系統本身提供穩固的協定框架，而各部署方持續累積的專屬資料庫、決策判斷的證據鏈以及最終結果，才是整個架構真正的價值所在。
+---
 
+**流程圖**
 
+```mermaid
+graph TD
+    %% =======================
+    %% 節點定義與樣式
+    %% =======================
+    Start(["💬 對話資料輸入"])
 
+    InitExtract["初步分析萃取<br/>提取事件、角色、意圖"]
+    DB_Match_1{"<br/>資料庫初步比對"}
+    
+    BB_Analysis["黑箱模型 BB 分析<br/>讀取完整上下文，產出意圖與資料結構"]
+    Zbb_Gen["產出合格之 Z_bb 快照"]
+    OS_Analysis["白箱模型 OS 分析<br/>T=0 基線，無上下文，僅BB之回應意圖與單輪輸入資料，獨立產生比對資料"]
+    
+    Dual_Verify{"一致性閘門：<br/>雙模型驗證模組比對"}
+    Exception["異常/不合格處置<br/>(依文件退回升級 Tier 2 或阻斷重置)"]
+    
+    DB_Match_2{"<br/>使用 Z_bb 再次比對資料庫"}
+    
+    Check_Event_Empty{"事件集合為空"}
+    Check_Tier_0{"Tier = 0 "}
+    
+    Mod_2plus4["取 Z_bb 資料進行快照比對，2+4 守則模組<br/>O(1) 矩陣三態判定"]
+    
+    Cond_2p4_2{"最高規範 (1~2) 有 Fail 且 Tier=2<br/>或<br/>最高規範有 Unknown 且 Tier=2 "}
+    Cond_2p4_3{"最高規範有 Unknown 且 Tier < 2 <br/>或<br/>次要規範 (3~6) 有 Fail 且 Tier < 2 "}
+    Cond_2p4_4{"六條守則全數 Pass<br/>且 Tier=0 "}
+    
+    Rerun_T2["退回重跑：<br/>黑箱強制以 Tier 2 重新進行角色追溯"]
 
+    Mod_Boundary["邊界四問模組<br/>最終裁決與代價結算"]
+    
+    Q1{"Q1: 法規界線檢驗<br/>(法理紅線與授權例外)"}
+    Q2{"Q2: 特權與對價流向結算<br/>(結構性代價偏移)"}
+    Q3{"Q3: 權限不對等殘留<br/>(扣除合法特權之剝削)"}
+    Q4["Q4: 知情同意與授權豁免<br/>(檢視默許與退出權)"]
 
+    Direct_Output(["✅ 直接提取結果回應"])
+    Block_Action["🛡️ 阻攔處置 (BLOCK)<br/>終止回應，嚴禁意圖送入生成模型"]
+    Pass_Action["✅ 放行處置 (DISCLOSE)<br/>包含安全短路放行與灰階風險揭露"]
 
+    Small_Model["送入小模型 (生成模型)<br/>依原始意圖生成最終回應"]
+    Risk_Report_Pass["產出/固化審計日誌<br/>生成可調設之風險揭露報告"]
+    Risk_Report_Block["產出/固化審計日誌<br/>生成拒絕/風險揭露報告"]
+    
+    End_Response(["輸出：最終回應 + 風險報告"])
+    End_Block(["輸出：僅展示風險/拒絕報告<br/>(無生成內容)"])
 
+    %% =======================
+    %% 流程連線
+    %% =======================
+    Start --> InitExtract
+    InitExtract --> DB_Match_1
 
+    DB_Match_1 -- "有匹配 (歷史判例)" --> Direct_Output
+    DB_Match_1 -- "無匹配" --> BB_Analysis
 
+    BB_Analysis --> Zbb_Gen --> OS_Analysis
+    OS_Analysis --> Dual_Verify
 
+    %% 雙模型驗證後，接續資料庫比對
+    Dual_Verify -- "不合格 (漏抓/等級不匹配/異常)" --> Exception
+    Dual_Verify -- "合格 (PASS)" --> DB_Match_2
 
+    DB_Match_2 -- "有匹配" --> Direct_Output
+    DB_Match_2 -- "無匹配" --> Check_Event_Empty
 
+    %% 事件空值判定作為進入 2+4 的前置閘門
+    Check_Event_Empty -- "Yes" --> Check_Tier_0
+    Check_Tier_0 -- "Yes (物理短路直接放行)" --> Small_Model
+    Check_Tier_0 -- "No (風險不可容忍)" --> Exception
 
+    Check_Event_Empty -- "No (事件不為空)" --> Mod_2plus4
 
+    %% 2+4 模組核心運算
+    Mod_2plus4 --> Cond_2p4_2
 
+    Cond_2p4_2 -- "Yes (觸發絕對紅線)" --> Block_Action
+    Cond_2p4_2 -- "No" --> Cond_2p4_3
+    
+    Cond_2p4_3 -- "Yes (風險未明需加嚴)" --> Rerun_T2
+    Rerun_T2 -.->|攜帶目標數量參數| BB_Analysis
+    
+    Cond_2p4_3 -- "No" --> Cond_2p4_4
+    Cond_2p4_4 -- "Yes (物理短路直接放行)" --> Pass_Action
+    Cond_2p4_4 -- "No (進入深層結算)" --> Mod_Boundary
 
+    Mod_Boundary --> Q1
+    
+    Q1 -- "FAIL (明確違背法理紅線)" --> Block_Action
+    Q1 -- "PASS / UNKNOWN" --> Q2
+    
+    Q2 -- "PASS (短路放行路由)" --> Pass_Action
+    Q2 -- "FAIL / UNKNOWN (剝削/未明)" --> Q3
+    
+    Q3 -- "PASS (短路放行路由)" --> Pass_Action
+    Q3 -- "FAIL / UNKNOWN (殘留剝削/未明)" --> Q4
+    
+    Q4 -->|紀錄最終未授權殘留代價| Pass_Action
 
+    Block_Action --> Risk_Report_Block
+    Risk_Report_Block --> End_Block
 
+    Pass_Action --> Small_Model
+    Pass_Action --> Risk_Report_Pass
+    
+    Small_Model --> End_Response
+    Risk_Report_Pass -.->|附加於回應首尾| End_Response
+    Direct_Output -.->|視同放行輸出| End_Response
 
-
+    %% =======================
+    %% 視覺化樣式分類
+    %% =======================
+    classDef gate fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef model fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef pass fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef block fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef rerun fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000;
+    
+    class DB_Match_1,Dual_Verify,DB_Match_2,Check_Event_Empty,Check_Tier_0,Cond_2p4_2,Cond_2p4_3,Q1,Q2,Q3 gate;
+    class BB_Analysis,OS_Analysis,Small_Model,Mod_2plus4,Mod_Boundary,Q4 model;
+    class Pass_Action,Direct_Output,End_Response pass;
+    class Block_Action,Exception,End_Block block;
+    class Rerun_T2 rerun;
+```
