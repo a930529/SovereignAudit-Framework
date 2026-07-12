@@ -353,4 +353,4 @@ graph TD
 
 關於 SovereignAudit 的技術交流、企業導入諮詢合作，或是對架構的其他延伸應用藍圖（如商業預測、NPC 動態運算）感興趣等等，都歡迎透過 LinkedIn 與我聯繫：
 
-* [🔗 我的 LinkedIn 檔案 (My LinkedIn)]([https://www.linkedin.com/in/%E4%BA%8E%E8%A5%84%E8%94%A1/]
+[🔗 我的 LinkedIn 檔案 (My LinkedIn)](https://www.linkedin.com/in/%E4%BA%8E%E8%A5%84%E8%94%A1/)
