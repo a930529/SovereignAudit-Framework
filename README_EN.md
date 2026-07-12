@@ -131,6 +131,9 @@ Supports the export of de-identified decision snapshot data $Z_{bb}$, which can 
 
 # SovereignAudit System Framework (Table of Contents)
 
+**Pure Theoretical Verification-Initial Architecture Draft**
+[English](./Pure_Theoretical_Verification-Initial_Architecture_Draft.md) | [繁體中文](./純理論驗證-架構最初的草稿.md)
+
 <details>
 <summary><b>01. Architecture Design Purpose and Core Advantages</b></summary>
 
