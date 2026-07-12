@@ -350,3 +350,9 @@ graph TD
     class Block_Action,Exception,End_Block block;
     class Rerun_T2 rerun;
 ```
+
+## Contact & Business Inquiries
+
+For technical discussions regarding SovereignAudit, enterprise integration consulting, or if you are interested in other extended application blueprints of this framework (such as commercial prediction or NPC dynamic calculation), feel free to connect with me on LinkedIn:
+
+* [🔗 Connect with me on LinkedIn](https://www.linkedin.com/in/%E4%BA%8E%E8%A5%84%E8%94%A1/)
