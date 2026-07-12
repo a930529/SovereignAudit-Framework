@@ -127,7 +127,10 @@ governance_profile:
 
 ---
 
-# SovereignAudit 系統框架目錄 (Table of Contents)
+## SovereignAudit 系統框架目錄 (Table of Contents)
+
+**純理論驗證-架構最初的草稿**
+[English](./Pure_Theoretical_Verification-Initial_Architecture_Draft.md) | [繁體中文](./純理論驗證-架構最初的草稿.md)
 
 <details>
 <summary><b>01. 架構設計目的與核心優勢 (Architecture Design Purpose)</b></summary>
