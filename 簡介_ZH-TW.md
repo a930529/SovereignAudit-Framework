@@ -129,8 +129,8 @@ governance_profile:
 
 ## SovereignAudit 系統框架目錄 (Table of Contents)
 
-**純理論驗證-架構最初的草稿**
-[English](./Pure_Theoretical_Verification-Initial_Architecture_Draft.md) | [繁體中文](./純理論驗證-架構最初的草稿.md)
+**簡介**
+[English](./README_EN.md) | [繁體中文](./簡介_ZH-TW.md)
 
 <details>
 <summary><b>01. 架構設計目的與核心優勢 (Architecture Design Purpose)</b></summary>
@@ -218,6 +218,15 @@ governance_profile:
 * 7. 終端路由與報告生成模組
 * 邊界四問審計日誌完整紀錄規格
 </details>
+
+**07.QA問答與致謝**
+[English](./07.Q&A_and_Acknowledgments.md) | [繁體中文](./07.QA問答與致謝.md)
+
+**08.純理論驗證-架構最初的草稿**
+[English](./08.Pure_Theoretical_Verification-Initial_Architecture_Draft.md) | [繁體中文](./08.純理論驗證-架構最初的草稿.md)
+
+**09.概念簡述與附錄**
+[English](./09.Conceptual_Framework_&_Appendix.md) | [繁體中文](./09.概念簡述與附錄.md)
 
 ---
 
