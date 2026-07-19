@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Status](https://img.shields.io/badge/Status-Specification%20%2F%20Concept-orange.svg)]()
-[English](./README_EN.md) | [繁體中文](./簡介_ZH-TW.md)
+[English](./README.md) | [繁體中文](./簡介_ZH-TW.md)
 
 **主權 AI 治理與審計架構**
 
