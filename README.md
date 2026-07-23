@@ -1,6 +1,7 @@
 # 🛡️ SovereignAudit Framework
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Status](https://img.shields.io/badge/Status-Specification%20%2F%20Concept-orange.svg)]()
+[![DOI](https://zenodo.org/badge/1252525505.svg)](https://doi.org/10.5281/zenodo.21520685)
 [English](./README.md) | [繁體中文](./簡介_ZH-TW.md)
 
 **Sovereign AI Governance & Audit Framework**
